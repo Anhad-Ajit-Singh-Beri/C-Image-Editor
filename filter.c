@@ -93,9 +93,14 @@ void invert(Image *image)
     unsigned char *pixel = image->pixels;
     for (int i = 0; i < numPixels; i++)
     {
-        *pixel = 255 - *pixel; // Invert the pixel value
-        *(pixel + 1) = 255 - *(pixel + 1);
-        *(pixel + 2) = 255 - *(pixel + 2);
+        int ir = 255 - *pixel; 
+        int ig = 255 - *(pixel + 1);
+        int ib = 255 - *(pixel + 2);
+
+        *pixel = ir;
+        *(pixel + 1) = ig;
+        *(pixel + 2) = ib;
+
         pixel += 3;
     }
 }
@@ -183,6 +188,81 @@ void reflectX(Image *image)
     free(tempRow);
 }
 // TO-Do Fix Repeat
+void sepia(Image *image)
+{
+    // Modify the pixel data as desired
+    // For example, let's invert the colors of the image
+    int numPixels = image->width * image->height;
+    unsigned char *pixel = image->pixels;
+    for (int i = 0; i < numPixels; i++)
+    {
+        int sr = round(0.393 * *(pixel + 2) + 0.769 * *(pixel + 1) + 0.189 * *(pixel));
+        int sg = round(0.349* *(pixel + 2) + 0.686* *(pixel + 1) + 0.168* *(pixel));
+        int sb = round(0.272* *(pixel + 2) + 0.534* *(pixel + 1) + 0.131* *(pixel));
+        
+
+        *(pixel + 2) = sr;
+        *(pixel + 1) = sg;
+        *pixel = sb;
+
+        pixel += 3;
+    }
+}
+
+void bw(Image *image)
+{
+    int numPixels = image->width * image->height;
+    unsigned char *pixel = image->pixels;
+    for (int i = 0; i < numPixels; i++)
+    {
+        *pixel = *(pixel + 1) = *(pixel + 2);
+        pixel += 3;
+    }
+}
+
+void red(Image *image)
+{
+    int numPixels = image->width * image->height;
+    unsigned char *pixel = image->pixels;
+    for (int i = 0; i < numPixels; i++)
+    {
+        *pixel = 0;
+        *(pixel + 1) = 0;
+
+        pixel += 3;
+    }
+}
+
+void green(Image *image)
+{
+    int numPixels = image->width * image->height;
+    unsigned char *pixel = image->pixels;
+    for (int i = 0; i < numPixels; i++)
+    {
+        *pixel = 0;
+        *(pixel + 2) = 0;
+
+        pixel += 3;
+    }
+}
+
+void blue(Image *image)
+{
+    int numPixels = image->width * image->height;
+    unsigned char *pixel = image->pixels;
+    for (int i = 0; i < numPixels; i++)
+    {
+        *(pixel + 2) = 0;
+        *(pixel + 1) = 0;
+
+        pixel += 3;
+    }
+}
+
+
+// pixel + 2 :::: Red
+// pixel + 1 :::: Green
+// pixel     :::: Blue
 
 
 int calculatePadding(int width)
@@ -219,7 +299,7 @@ void saveImageToFile(const char *filename, Image *image)
 
 int main()
 {
-    const char *filename = "example.bmp";
+    const char *filename = "example2.bmp";
     Image *image = createImageFromFile(filename);
 
     if (image)
@@ -227,7 +307,7 @@ int main()
         printf("Image dimensions: %d x %d\n", image->width, image->height);
 
         // Update the image pixel data
-        reflectX(image);
+        yellow(image);
 
         // Save the modified image back to the file
         saveImageToFile("modified.bmp", image);
