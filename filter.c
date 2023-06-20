@@ -93,7 +93,7 @@ void invert(Image *image)
     unsigned char *pixel = image->pixels;
     for (int i = 0; i < numPixels; i++)
     {
-        int ir = 255 - *pixel; 
+        int ir = 255 - *pixel;
         int ig = 255 - *(pixel + 1);
         int ib = 255 - *(pixel + 2);
 
@@ -190,16 +190,13 @@ void reflectX(Image *image)
 // TO-Do Fix Repeat
 void sepia(Image *image)
 {
-    // Modify the pixel data as desired
-    // For example, let's invert the colors of the image
     int numPixels = image->width * image->height;
     unsigned char *pixel = image->pixels;
     for (int i = 0; i < numPixels; i++)
     {
         int sr = round(0.393 * *(pixel + 2) + 0.769 * *(pixel + 1) + 0.189 * *(pixel));
-        int sg = round(0.349* *(pixel + 2) + 0.686* *(pixel + 1) + 0.168* *(pixel));
-        int sb = round(0.272* *(pixel + 2) + 0.534* *(pixel + 1) + 0.131* *(pixel));
-        
+        int sg = round(0.349 * *(pixel + 2) + 0.686 * *(pixel + 1) + 0.168 * *(pixel));
+        int sb = round(0.272 * *(pixel + 2) + 0.534 * *(pixel + 1) + 0.131 * *(pixel));
 
         *(pixel + 2) = sr;
         *(pixel + 1) = sg;
@@ -216,6 +213,19 @@ void bw(Image *image)
     for (int i = 0; i < numPixels; i++)
     {
         *pixel = *(pixel + 1) = *(pixel + 2);
+        pixel += 3;
+    }
+}
+
+void tint(Image *image)
+{
+    int numPixels = image->width * image->height;
+    unsigned char *pixel = image->pixels;
+    for (int i = 0; i < numPixels; i++)
+    {
+        *(pixel + 1) = 165;
+        *(pixel + 2) = 255;
+
         pixel += 3;
     }
 }
@@ -259,11 +269,92 @@ void blue(Image *image)
     }
 }
 
+void yellow(Image *image)
+{
+    int numPixels = image->width * image->height;
+    unsigned char *pixel = image->pixels;
+    for (int i = 0; i < numPixels; i++)
+    {
+        *(pixel + 1) = 255;
+        *(pixel + 2) = 255;
+
+        pixel += 3;
+    }
+}
+
+void thunderNoir(Image *image)
+{
+    int numPixels = image->width * image->height;
+    unsigned char *pixel = image->pixels;
+    for (int i = 0; i < numPixels; i++)
+    {
+        *(pixel + 1) = 135;
+        *(pixel + 2) = 135;
+
+        pixel += 3;
+    }
+}
+
+void moonlight(Image *image)
+{
+    int numPixels = image->width * image->height;
+    unsigned char *pixel = image->pixels;
+    for (int i = 0; i < numPixels; i++)
+    {
+
+        *(pixel + 1) = 0;    // Green channel
+        *(pixel + 2) *= 0.5; // Blue channel
+
+        pixel += 3;
+    }
+}
+
+void colorPop(Image *image)
+{
+    int numPixels = image->width * image->height;
+    unsigned char *pixel = image->pixels;
+    for (int i = 0; i < numPixels; i++)
+    {
+
+        *(pixel + 1) = 0; // Green channel
+        *pixel *= 0.5;    // Blue channel
+
+        pixel += 3;
+    }
+}
+
+void sunset(Image *image)
+{
+    int numPixels = image->width * image->height;
+    unsigned char *pixel = image->pixels;
+    for (int i = 0; i < numPixels; i++)
+    {
+
+        *pixel = 0;
+        *(pixel + 1) *= 0.5;
+
+        pixel += 3;
+    }
+}
+
+void dusk(Image *image)
+{
+    int numPixels = image->width * image->height;
+    unsigned char *pixel = image->pixels;
+    for (int i = 0; i < numPixels; i++)
+    {
+
+        *(pixel + 2) = 0;    // Green channel
+        *(pixel + 1) *= 0.5; // Blue channel
+
+        pixel += 3;
+    }
+}
+
 
 // pixel + 2 :::: Red
 // pixel + 1 :::: Green
 // pixel     :::: Blue
-
 
 int calculatePadding(int width)
 {
@@ -307,7 +398,7 @@ int main()
         printf("Image dimensions: %d x %d\n", image->width, image->height);
 
         // Update the image pixel data
-        yellow(image);
+        new (image);
 
         // Save the modified image back to the file
         saveImageToFile("modified.bmp", image);
